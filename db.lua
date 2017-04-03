@@ -12,16 +12,18 @@ bgml.db = {
 bgml.db._db_metatable = {}
 local dmt = bgml.db._db_metatable
 
+-- Hold for all loaded databases.
+local hold = {}
+
+-- Returns the base path for a database.
+local function basepath(name)
+    return bgml.internal.config.db_path .. DIR_DELIM .. name
+end
+
 -- Attempt to load the database, create an empty database if it doesn't exist.
 function dmt:load()
-    local f = io.open(self.path, "r")
     self.last_save = os.time()
-    if not f then
-        self.data = {}
-        return
-    end
-    self.data = minetest.deserialize(f:read("*all"))
-    f:close()
+    self.data = hold[self.name] or {}
 end
 
 -- Save the database robustly.
@@ -55,11 +57,10 @@ function bgml.db.new(name, save_interval)
     end
 
     local save_interval = save_interval or bgml.internal.config.save_interval
-    local basepath = bgml.internal.config.db_path .. DIR_DELIM .. name .. ".luatable"
     bgml.db.tables[name] = setmetatable({
         name = name,
-        path = basepath,
-        tmppath = basepath .. ".tmp",
+        path = basepath(name),
+        tmppath = basepath(name) .. ".tmp",
         last_save = 0,
     }, {__index = dmt})
     bgml.db.save_registry[name] = save_interval
@@ -94,8 +95,35 @@ minetest.register_on_shutdown(function()
     bgml.hooks.global:call("db_shutdown_end")
 end)
 
+if bgml.internal.config.db_cleaner then
+    bgml.hooks.global:add("db_shutdown_end", "bgml:db_cleaner", function()
+        for _,name in ipairs(minetest.get_dir_list(bgml.internal.config.db_path), false) do
+            if not bgml.db.tables[name] then
+                if not os.remove(basepath(name)) then
+                    error("Could not remove database: "..name)
+                end
+                bgml.log.none("[bgml.db] Removed old database: "..name)
+            end
+        end
+    end)
+end
+
 bgml.hooks.global:add("db_shutdown_end", "bgml:db_logger", function()
     bgml.log.info("[bgml.db] All databases saved due to shutdown.")
 end)
 
 minetest.mkdir(bgml.internal.config.db_path)
+
+-- Preload all databases into the holding table.
+local num = 0
+for _,name in ipairs(minetest.get_dir_list(bgml.internal.config.db_path), false) do
+    local f = io.open(basepath(name), "r")
+    if f then
+        hold[name] = minetest.deserialize(f:read("*all"))
+        f:close()
+    else
+        error("Unreadable database in the db path: "..name)
+    end
+    num = num + 1
+end
+bgml.log.none("[bgml.db] Databases loaded: "..tostring(num))

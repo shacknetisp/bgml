@@ -18,6 +18,8 @@ c.db_path = minetest.get_worldpath() .. DIR_DELIM .. "bgml" .. DIR_DELIM .. "db"
 c.save_interval = 10
 -- How many database files can be written per globalstep?
 c.db_save_per_step = 2
+-- Should databases not registered this run be removed?
+c.db_cleaner = true
 
 -- Utilities
 
