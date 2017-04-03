@@ -1,5 +1,5 @@
-bgml.req("core/hooks")
-bgml.req("core/logging")
+bgml.require("core/hooks")
+bgml.require("core/logging")
 -- Calls the mod beginning hooks, returns a fresh mod table.
 function bgml.mod.begin()
     local modname = minetest.get_current_modname()

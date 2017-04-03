@@ -1,4 +1,4 @@
-bgml.req("core/logging")
+bgml.require("core/logging")
 bgml.config = {}
 
 -- Returns a config table.

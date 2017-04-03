@@ -23,5 +23,8 @@ c.db_cleaner = true
 
 -- Utilities
 
--- Should Lua Utilities be registered into the standard namespace?
+-- Should lua utilities be registered into the standard namespace?
 c.lutils_full = true
+
+-- Should formatting utilities be registered as global variables?
+c.futils_full = true
