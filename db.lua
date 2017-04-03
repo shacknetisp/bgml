@@ -102,7 +102,7 @@ if bgml.internal.config.db_cleaner then
                 if not os.remove(basepath(name)) then
                     error("Could not remove database: "..name)
                 end
-                bgml.log.none("[bgml.db] Removed old database: "..name)
+                bgml.log.info("[bgml.db] Removed old database: "..name)
             end
         end
     end)
@@ -126,4 +126,4 @@ for _,name in ipairs(minetest.get_dir_list(bgml.internal.config.db_path), false)
     end
     num = num + 1
 end
-bgml.log.none("[bgml.db] Databases loaded: "..tostring(num))
+bgml.log.info("[bgml.db] Databases loaded: "..tostring(num))
