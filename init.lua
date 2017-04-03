@@ -27,15 +27,23 @@ end
 -- Create BGML's own domodfile.
 bgml.internal.dofile = bgml.mod.domodfile_factory()
 
--- These functions are used in the rest of BGML.
+-- These functions are used in mod.lua and must be loaded before the proper mod table can be created.
 bgml.internal.dofile("logging.lua")
 bgml.internal.dofile("hooks.lua")
+bgml.internal.dofile("config.lua")
 
 -- Next we need to load mod.lua in order for BGML to create it's own mod table appropriately.
 bgml.internal.dofile("mod.lua")
 
 -- Now BGML can be initialized normally.
-bgml.internal = bgml.mod.begin_mod()
+bgml.internal = bgml.mod.begin()
+
+-- Load default settings.
+bgml.internal.dofile("defaults.lua")
+
+-- Execute the rest of BGML.
+bgml.internal.dofile("lutils.lua")
+bgml.internal.dofile("db.lua")
 
 -- And we're done!
 bgml.internal.ready()

@@ -1,5 +1,9 @@
 bgml.logging = {}
 
+-- Returns a logging table. `modname` is optional.
+-- log = log_factory([modname])
+--- log([level], message)
+--- log.level(message)
 function bgml.logging.log_factory(modname)
     local lmt = {
         modname = modname or false,
@@ -11,8 +15,7 @@ function bgml.logging.log_factory(modname)
             end
         end,
     }
-    return setmetatable(
-        {},
+    return setmetatable({},
         {
             __index=function(self, k)
                 if lmt[k] ~= nil then
@@ -38,5 +41,5 @@ function bgml.logging.log_factory(modname)
     )
 end
 
--- Create the global log.
+-- Create the global log table.
 bgml.log = bgml.logging.log_factory()

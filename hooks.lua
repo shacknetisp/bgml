@@ -37,7 +37,7 @@ function hmt:hook_list(hook)
 end
 
 function bgml.hooks.new()
-    return setmetatable({}, {__index=hmt})
+    return setmetatable({}, {__index = hmt})
 end
 
 -- Create BGML's global hook table.
