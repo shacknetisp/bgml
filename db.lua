@@ -4,6 +4,8 @@ bgml.db = {
     save_pending = {},
     save_registry = {},
 
+    load_hold = {},
+
     -- Table of databases.
     tables = {},
 }
@@ -11,9 +13,6 @@ bgml.db = {
 -- Metatable for each database.
 bgml.db._db_metatable = {}
 local dmt = bgml.db._db_metatable
-
--- Hold for all loaded databases.
-local hold = {}
 
 -- Returns the base path for a database.
 local function basepath(name)
@@ -23,7 +22,7 @@ end
 -- Attempt to load the database, create an empty database if it doesn't exist.
 function dmt:load()
     self.last_save = os.time()
-    self.data = hold[self.name] or {}
+    self.data = bgml.db.load_hold[self.name] or {}
 end
 
 -- Save the database robustly.
@@ -119,7 +118,7 @@ local num = 0
 for _,name in ipairs(minetest.get_dir_list(bgml.internal.config.db_path), false) do
     local f = io.open(basepath(name), "r")
     if f then
-        hold[name] = minetest.deserialize(f:read("*all"))
+        bgml.db.load_hold[name] = minetest.deserialize(f:read("*all"))
         f:close()
     else
         error("Unreadable database in the db path: "..name)
