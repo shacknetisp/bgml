@@ -11,8 +11,7 @@ bgml.db = {
 }
 
 -- Metatable for each database.
-bgml.db._db_metatable = {}
-local dmt = bgml.db._db_metatable
+local dmt = {}
 
 -- Returns the base path for a database.
 local function basepath(name)

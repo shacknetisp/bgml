@@ -32,7 +32,7 @@ function bgml.mod.require_factory()
         end
         local full_path = modpath .. DIR_DELIM .. path
         -- Automatically attempt to add .lua
-        if not bgml.fsutils.exists(full_path) and bgml.fsutils.is_file(full_path .. ".lua") and not forcedir then
+        if not bgml.fsutils.exists(full_path) and bgml.fsutils.is_file(full_path .. ".lua") then
             full_path = full_path .. ".lua"
         end
         if not bgml.fsutils.exists(full_path) then
@@ -44,6 +44,7 @@ function bgml.mod.require_factory()
                 return
             end
             bgml._loaded[full_path] = true
+            -- Swap out bgml.require for the current mod's require function.
             local oldreq = bgml.require
             bgml.require = bgml["_require_"..modname]
             dofile(full_path)
@@ -66,7 +67,7 @@ function bgml.mod.require_factory()
     return bgml["_require_"..modname]
 end
 
--- First, the fsutils must be loaded manually.
+-- The fsutils must be loaded manually in order to use BGML's require.
 local fsutils_path = minetest.get_modpath(minetest.get_current_modname()) .. DIR_DELIM .. "utils" .. DIR_DELIM .. "fs.lua"
 bgml._loaded[fsutils_path] = true
 dofile(fsutils_path)

@@ -1,8 +1,7 @@
 bgml.hooks = {}
 
 -- Metatable for hook tables.
-bgml.hooks._hooks_metatable = {}
-local hmt = bgml.hooks._hooks_metatable
+local hmt = {}
 
 -- Add `callback` to `hook` with `name`.
 function hmt:add(hook, name, callback)
@@ -39,6 +38,8 @@ end
 function bgml.hooks.new()
     return setmetatable({}, {__index = hmt})
 end
+
+setmetatable(bgml.hooks, {__call = function(self, ...) return bgml.hooks.new(...) end, __index = hmt})
 
 -- Create BGML's global hook table.
 bgml.hooks.global = bgml.hooks.new()
