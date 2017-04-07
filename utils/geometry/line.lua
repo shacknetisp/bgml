@@ -97,7 +97,7 @@ function lmt:passedi()
             choosefit[i] = scalar(vector.normalize(vector.subtract(choose[i], self.start)), dir)
         end
         p = choose[get_max_coord(choosefit)]
-        if p and vector.distance(self.start, p) <= len then
+        if p and vector.distance(self.start, p) <= math.floor(len + 0.5) then
             return vector.new(p)
         end
     end
