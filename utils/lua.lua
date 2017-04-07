@@ -30,6 +30,15 @@ function bgml.lutils.combinei(...)
     return ret
 end
 
+-- Slowcopy a table with a key list.
+function bgml.lutils.slowcopy(target, from, keys)
+    local keys = keys or bgml.lutils.keys(from)
+    for _,k in ipairs(keys) do
+        target[k] = from[k]
+    end
+    return target
+end
+
 -- Return a table with keys filtered out.
 function bgml.lutils.exclude(t, klist)
     return bgml.lutils.filter(t, function(_, k, _)
@@ -109,6 +118,8 @@ end
 
 if bgml.internal.config.lutils_full then
     table.combine = bgml.lutils.combine
+    table.combinei = bgml.lutils.combinei
+    table.slowcopy = bgml.lutils.slowcopy
     table.exclude = bgml.lutils.exclude
     table.filter = bgml.lutils.filter
     table.filteri = bgml.lutils.filteri

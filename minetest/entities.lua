@@ -23,6 +23,11 @@ end)
 
 function bgml.register_entity(name, def)
     minetest.register_entity(name, bgml.lutils.combine(def, {
+
+        permanent = false,
+        autosave = true,
+        lifelimit = 300,
+
         on_activate = function(self, staticdata, dtime)
             -- Remove non-permanent entities if they are activated after creation time.
             if not def.permanent and dtime > 0.001 then
@@ -40,6 +45,27 @@ function bgml.register_entity(name, def)
             -- Build extra/external properties from staticdata.
             self.ext = minetest.deserialize(staticdata)
 
+            if type(self.ext) ~= "table" or not self.ext.id then
+                bgml.internal.log.error("[entities] Removed entity "..name.." due to invalid ext table at "..minetest.pos_to_string(self.object:getpos()))
+                self.object:remove()
+                return
+            end
+
+            setmetatable(self.ext, {__index = {
+                remove = function(ext)
+                    self.object:remove()
+                    bgml.entities.loaded[ext.id] = nil
+                end,
+            }})
+
+            -- Restore from autosaved properties.
+            if def.permanent and self.ext.autosaved then
+                bgml.lutils.slowcopy(self, table.combine(self.ext.autosaved.properties, self.ext.autosaved.selfkeys))
+                self.object:set_properties(self)
+            end
+
+            self.lifetimer = (self.lifetimer or 0) + dtime
+
             -- Call activation and load callbacks.
             for _,c in ipairs({def.on_activate or false, def.on_load or false}) do
                 if c then
@@ -54,10 +80,32 @@ function bgml.register_entity(name, def)
                 ext = self.ext,
             }
         end,
+        on_step = function(self, dtime)
+            self.lifetimer = self.lifetimer + dtime
+            if def.lifelimit and self.lifetimer > def.lifelimit then
+                self.ext:remove()
+                return
+            end
+            -- Call step callbacks.
+            for _,c in ipairs({def.on_step or false}) do
+                if c then
+                    c(self, dtime)
+                end
+            end
+        end,
         get_staticdata = function(self)
             -- Only permanent entities should set their staticdata.
-            if not def.permanent then
+            if not def.permanent or not self.ext then
                 return
+            end
+
+            -- Save properties.
+            if def.permanent then
+                self.ext.autosaved = {
+                    properties = def.autosave and self.object:get_properties() or {},
+                    selfkeys = {},
+                }
+                bgml.lutils.slowcopy(self.ext.autosaved.selfkeys, self, bgml.lutils.combine({"lifetimer"}, (type(def.autosave) == "table") and def.autosave or {}))
             end
 
             -- Call saving callbacks.
