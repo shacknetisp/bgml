@@ -20,6 +20,27 @@ function bgml.lutils.combine(...)
     end
     return ret
 end
+function bgml.lutils.combinei(...)
+    local ret = {}
+    for _,t in ipairs({...}) do
+        for _,v in pairs(t) do
+            table.insert(ret, v)
+        end
+    end
+    return ret
+end
+
+-- Return a table with keys filtered out.
+function bgml.lutils.exclude(t, klist)
+    return bgml.lutils.filter(t, function(_, k, _)
+        for _,v in ipairs(klist) do
+            if k == v then
+                return false
+            end
+        end
+        return true
+    end)
+end
 
 -- Get the number of keys in any table.
 function bgml.lutils.length(t)
@@ -88,6 +109,7 @@ end
 
 if bgml.internal.config.lutils_full then
     table.combine = bgml.lutils.combine
+    table.exclude = bgml.lutils.exclude
     table.filter = bgml.lutils.filter
     table.filteri = bgml.lutils.filteri
     table.keys = bgml.lutils.keys
