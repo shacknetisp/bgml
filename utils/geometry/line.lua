@@ -43,7 +43,7 @@ end
 
 -- Test if the line has collided with an entity.
 function lmt:collide_object(obj, ...)
-    return self:collide_box(bgml.box.frombox(obj:get_properties().collisionbox), obj:getpos(), ...)
+    return self:collide_box(bgml.box.fromcbox(obj:get_properties().collisionbox), obj:getpos(), ...)
 end
 
 

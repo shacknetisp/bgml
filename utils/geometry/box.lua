@@ -34,7 +34,7 @@ end
 
 -- Test if the box has collided with an entity.
 function cmt:collide_object(obj, ...)
-    return self:collide_box(bgml.geometry.box.frombox(obj:get_properties().collisionbox), obj:getpos(), ...)
+    return self:collide_box(bgml.geometry.box.fromcbox(obj:get_properties().collisionbox), obj:getpos(), ...)
 end
 
 -- Get the extremes of the box.
@@ -64,7 +64,7 @@ function bgml.geometry.box.fromorigin(origin, fromlen)
 end
 
 -- From entity collision box.
-function bgml.geometry.box.frombox(box)
+function bgml.geometry.box.fromcbox(box)
     return bgml.geometry.box.new(vector.new(box[1], box[2], box[3]), vector.new(box[4], box[5], box[6]))
 end
 
