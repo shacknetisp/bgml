@@ -12,19 +12,19 @@ end
 
 
 local function get_nodes_x(f, origin, fromlen, names)
-    local minpos, maxpos = bgml.cube.fromorigin(origin, fromlen)
+    local minpos, maxpos = bgml.box.fromorigin(origin, fromlen)
     return f(minpos, maxpos, names)
 end
 
--- Search for nodes in a cube.
+-- Search for nodes in a box.
 -- ...(origin, fromlen, names)
-function bgml.get_nodes_in_cube(...)
+function bgml.get_nodes_around(...)
     return get_nodes_x(minetest.find_nodes_in_area, ...)
 end
 
--- Search for nodes under air in a cube.
+-- Search for nodes under air in a box.
 -- ...(origin, fromlen, names)
-function bgml.get_nodes_in_cube_under_air(...)
+function bgml.get_nodes_around_under_air(...)
     return get_nodes_x(minetest.find_nodes_in_area_under_air, ...)
 end
 
@@ -34,7 +34,7 @@ function bgml.node_to_block(pos)
 end
 
 -- Get the boundaries of a mapblock.
-function bgml.block_to_cube(pos)
+function bgml.block_to_box(pos)
     local origin = vector.multiply(pos, BLOCK_SIZE)
-    return bgml.cube.new(origin, vector.add(origin, BLOCK_SIZE-1))
+    return bgml.box.new(origin, vector.add(origin, BLOCK_SIZE-1))
 end

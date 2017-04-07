@@ -1,6 +1,12 @@
 bgml.geometry.line = {}
 local lmt = {}
 
+
+-- Get a reversed line.
+function lmt:reversed()
+    return bgml.geometry.line.new(self.finish, self.start)
+end
+
 -- Get the midpoint of the line.
 function lmt:middle()
     return vector.divide(vector.add(self.start, self.finish), 2)
@@ -37,7 +43,7 @@ end
 
 -- Test if the line has collided with an entity.
 function lmt:collide_object(obj, ...)
-    return self:collide_box(bgml.cube.frombox(obj:get_properties().collisionbox), obj:getpos(), ...)
+    return self:collide_box(bgml.box.frombox(obj:get_properties().collisionbox), obj:getpos(), ...)
 end
 
 

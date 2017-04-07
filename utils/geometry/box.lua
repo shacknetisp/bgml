@@ -1,7 +1,7 @@
-bgml.geometry.cube = {}
+bgml.geometry.box = {}
 local cmt = {}
 
--- Test if the cube has collided with a box at pos.
+-- Test if the box has collided with a box at pos.
 function cmt:collide_box(box, pos)
     local box = pos and box:translated(pos) or box
 
@@ -32,12 +32,12 @@ function cmt:collide_box(box, pos)
     return true
 end
 
--- Test if the cube has collided with an entity.
+-- Test if the box has collided with an entity.
 function cmt:collide_object(obj, ...)
-    return self:collide_box(bgml.geometry.cube.frombox(obj:get_properties().collisionbox), obj:getpos(), ...)
+    return self:collide_box(bgml.geometry.box.frombox(obj:get_properties().collisionbox), obj:getpos(), ...)
 end
 
--- Get the extremes of the cube.
+-- Get the extremes of the box.
 function cmt:extremes()
     return {
         min = vector.new(math.min(self.a.x, self.b.x), math.min(self.a.y, self.b.y), math.min(self.a.z, self.b.z)),
@@ -45,13 +45,13 @@ function cmt:extremes()
     }
 end
 
--- Get the cube translated to a position
+-- Get the box translated to a position
 function cmt:translated(pos)
-    return bgml.geometry.cube.new(vector.add(pos, self.a), vector.add(pos, self.b))
+    return bgml.geometry.box.new(vector.add(pos, self.a), vector.add(pos, self.b))
 end
 
 -- From corners.
-function bgml.geometry.cube.new(a, b)
+function bgml.geometry.box.new(a, b)
     return setmetatable({
             a = a,
             b = b,
@@ -59,13 +59,13 @@ function bgml.geometry.cube.new(a, b)
 end
 
 -- From origin.
-function bgml.geometry.cube.fromorigin(origin, fromlen)
-    return bgml.geometry.cube.new(vector.subtract(origin, fromlen), vector.add(origin, fromlen))
+function bgml.geometry.box.fromorigin(origin, fromlen)
+    return bgml.geometry.box.new(vector.subtract(origin, fromlen), vector.add(origin, fromlen))
 end
 
 -- From entity collision box.
-function bgml.geometry.cube.frombox(box)
-    return bgml.geometry.cube.new(vector.new(box[1], box[2], box[3]), vector.new(box[4], box[5], box[6]))
+function bgml.geometry.box.frombox(box)
+    return bgml.geometry.box.new(vector.new(box[1], box[2], box[3]), vector.new(box[4], box[5], box[6]))
 end
 
-bgml.cube = setmetatable(bgml.geometry.cube, {__call = function(self, ...) return bgml.geometry.cube.new(...) end, __index = cmt})
+bgml.box = setmetatable(bgml.geometry.box, {__call = function(self, ...) return bgml.geometry.box.new(...) end, __index = cmt})
