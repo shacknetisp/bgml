@@ -28,9 +28,13 @@ end
 
 -- Logging hooks.
 bgml.hooks.global:add("mod_begin", "bgml:mod_logger", function(modname)
-    bgml.log.info("[bgml.mod] begin: "..modname)
+    if bgml.internal.log then
+        bgml.internal.log.info("[mod] begin: "..modname)
+    else
+        bgml.log.info("[bgml.mod] begin: "..modname)
+    end
 end)
 
 bgml.hooks.global:add("mod_ready", "bgml:mod_logger", function(modname)
-    bgml.log(bgml.internal.config.log_mods and "none" or "info", "[bgml.mod] ready: "..modname)
+    bgml.internal.log(bgml.internal.config.log_mods and "none" or "info", "[mod] ready: "..modname)
 end)

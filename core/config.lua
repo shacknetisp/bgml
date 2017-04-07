@@ -43,7 +43,7 @@ function bgml.config.config_factory()
         __newindex = function(self, key, value)
             self._defaults[key] = value
             if bgml.internal.config.log_config then
-                bgml.log(("[bgml.config] %s.%s = %s (default: %s)"):format(modname, tostring(key), dump(get(key, value)), dump(value)))
+                bgml.internal.log(("[config] %s.%s = %s (default: %s)"):format(modname, tostring(key), dump(get(key, value)), dump(value)))
             end
         end,
     })

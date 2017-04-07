@@ -4,7 +4,7 @@ function bgml.futils.s(label, number, s)
     if number == 1 then
         return ("%d %s"):format(number, label)
     else
-        return ("%d %s%s"):format(number, label, s or "s")
+        return ("%d %s"):format(number, label, s or (label .. "s"))
     end
 end
 

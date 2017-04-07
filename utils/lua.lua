@@ -1,3 +1,4 @@
+local FLOAT_ACCURACY = 0.0001
 bgml.lutils = {}
 
 -- Return an array-table of `t`'s keys.
@@ -77,6 +78,12 @@ end
 -- Filter a table.
 function bgml.lutils.filter(...)
     return filterx(pairs, ...)
+end
+
+-- Are two floating point numbers reasonably equal?
+function bgml.lutils.fequal(a, b, accuracy)
+    local accuracy = accuracy or FLOAT_ACCURACY
+    return math.abs(a - b) < accuracy
 end
 
 if bgml.internal.config.lutils_full then

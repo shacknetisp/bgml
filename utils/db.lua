@@ -66,6 +66,8 @@ function bgml.db.new(name, save_interval)
     return bgml.db.tables[name].data, bgml.db.tables[name]
 end
 
+setmetatable(bgml.db, {__call = function(self, ...) return bgml.db.new(...) end, __index = dmt})
+
 minetest.register_globalstep(function(dtime)
     -- Check if any databases need added to the save queue.
     for name,t in pairs(bgml.db.tables) do
@@ -100,14 +102,14 @@ if bgml.internal.config.db_cleaner then
                 if not os.remove(basepath(name)) then
                     error("Could not remove database: "..name)
                 end
-                bgml.log.info("[bgml.db] Removed old database: "..name)
+                bgml.internal.log.info("[db] Removed old database: "..name)
             end
         end
     end)
 end
 
 bgml.hooks.global:add("db_shutdown_end", "bgml:db_logger", function()
-    bgml.log.info("[bgml.db] All databases saved due to shutdown.")
+    bgml.internal.log.info("[db] All databases saved due to shutdown.")
 end)
 
 minetest.mkdir(bgml.internal.config.db_path)
@@ -124,4 +126,4 @@ for _,name in ipairs(minetest.get_dir_list(bgml.internal.config.db_path), false)
     end
     num = num + 1
 end
-bgml.log.info("[bgml.db] Databases loaded: "..tostring(num))
+bgml.internal.log.info("[db] Databases loaded: "..tostring(num))
