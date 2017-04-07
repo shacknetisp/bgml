@@ -60,7 +60,7 @@ function bgml.register_entity(name, def)
 
             -- Restore from autosaved properties.
             if def.permanent and self.ext.autosaved then
-                bgml.lutils.slowcopy(self, table.combine(self.ext.autosaved.properties, self.ext.autosaved.selfkeys))
+                bgml.lutils.slowcopy(self, bgml.lutils.combine(self.ext.autosaved.properties, self.ext.autosaved.selfkeys))
                 self.object:set_properties(self)
             end
 

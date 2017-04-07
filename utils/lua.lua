@@ -115,16 +115,3 @@ function bgml.lutils.fequal(a, b, accuracy)
     local accuracy = accuracy or FLOAT_ACCURACY
     return math.abs(a - b) < accuracy
 end
-
-if bgml.internal.config.lutils_full then
-    table.combine = bgml.lutils.combine
-    table.combinei = bgml.lutils.combinei
-    table.slowcopy = bgml.lutils.slowcopy
-    table.exclude = bgml.lutils.exclude
-    table.filter = bgml.lutils.filter
-    table.filteri = bgml.lutils.filteri
-    table.keys = bgml.lutils.keys
-    table.length = bgml.lutils.length
-    table.shuffled = bgml.lutils.shuffled
-    table.spairs = bgml.lutils.spairs
-end

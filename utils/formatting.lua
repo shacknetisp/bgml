@@ -7,7 +7,3 @@ function bgml.futils.s(label, number, s)
         return ("%d %s"):format(number, label, s or (label .. "s"))
     end
 end
-
-if bgml.internal.config.futils_full then
-    fS = bgml.futils.s
-end
