@@ -13,16 +13,16 @@ function bgml.config.config_factory()
     -- This function wraps around minetest.setting_get[bool] to check if the default should be overriden.
     local function get(setting, default)
         if type(default) == "boolean" then
-            local read = minetest.setting_getbool(modname.."."..setting)
+            local read = minetest.settings:get_bool(modname.."."..setting)
             if read == nil then
                 return default
             else
                 return read
             end
         elseif type(default) == "string" then
-            return minetest.setting_get(modname.."."..setting) or default
+            return minetest.settings:get(modname.."."..setting) or default
         elseif type(default) == "number" then
-            return tonumber(minetest.setting_get(modname.."."..setting) or default)
+            return tonumber(minetest.settings:get(modname.."."..setting) or default)
         else
             error(("Unknown format for configuration key '%s': %s"):format(setting, type(default)))
         end
