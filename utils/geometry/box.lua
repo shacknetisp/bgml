@@ -32,6 +32,21 @@ function cmt:collide_box(box, pos)
     return true
 end
 
+-- Test if a point has collided with a point at pos.
+function cmt:collide_point(pos)
+    local e = self:extremes()
+    if pos.x < e.min.x or pos.x > e.max.x then
+        return false
+    end
+    if pos.y < e.min.y or pos.y > e.max.y then
+        return false
+    end
+    if pos.z < e.min.z or pos.z > e.max.z then
+        return false
+    end
+    return true
+end
+
 -- Test if the box has collided with an entity.
 function cmt:collide_object(obj, ...)
     return self:collide_box(bgml.geometry.box.fromcbox(obj:get_properties().collisionbox), obj:getpos(), ...)
