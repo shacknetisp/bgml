@@ -32,9 +32,9 @@ function bgml.logging.log_factory(modname)
                 -- Message should be whichever is last not nil.
                 message = self:message(b or a)
                 if level then
-                    return minetest.log(level, message)
+                    return engine.log(level, message)
                 else
-                    return minetest.log(message)
+                    return engine.log(message)
                 end
             end,
         }

@@ -10,6 +10,9 @@ bgml = {
     mod = {},
 }
 
+-- Engine alias namespace to whatever engine we're running on.
+engine = minetest
+
 local MAX_REQUIRE_ITERS = 10
 
 -- First we need a way to load the rest of BGML. Thus the dofile wrapper system is in init.lua
@@ -17,10 +20,10 @@ local MAX_REQUIRE_ITERS = 10
 -- Generate the `require` function.
 function bgml.mod.require_factory()
     -- Attempt to locate our directory.
-    local modname = minetest.get_current_modname()
-    local modpath = minetest.get_modpath(modname)
+    local modname = engine.get_current_modname()
+    local modpath = engine.get_modpath(modname)
     if modpath == nil then
-        error("minetest.get_modpath for "..modname.." returned nil.")
+        error("engine.get_modpath for "..modname.." returned nil.")
     end
 
     -- Directory found, build the function.
@@ -58,7 +61,7 @@ function bgml.mod.require_factory()
             bgml["_require_"..modname](init_path)
         end
         -- Loop through everything in this directory and call the function again on it.
-        for _,n in ipairs(minetest.get_dir_list(full_path)) do
+        for _,n in ipairs(engine.get_dir_list(full_path)) do
             if n ~= "init.lua" then
                 bgml["_require_"..modname](path .. DIR_DELIM .. n, iter + 1)
             end
@@ -68,7 +71,7 @@ function bgml.mod.require_factory()
 end
 
 -- The fsutils must be loaded manually in order to use BGML's require.
-local fsutils_path = minetest.get_modpath(minetest.get_current_modname()) .. DIR_DELIM .. "utils" .. DIR_DELIM .. "fs.lua"
+local fsutils_path = engine.get_modpath(engine.get_current_modname()) .. DIR_DELIM .. "utils" .. DIR_DELIM .. "fs.lua"
 bgml._loaded[fsutils_path] = true
 dofile(fsutils_path)
 

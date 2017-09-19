@@ -2,7 +2,7 @@ local BLOCK_SIZE = 16
 
 -- Get node, even if unloaded. Will load node's block.
 function bgml.get_node(pos)
-    local node = minetest.get_node_or_nil(pos)
+    local node = engine.get_node_or_nil(pos)
     if node then
         return node
     end
@@ -19,13 +19,13 @@ end
 -- Search for nodes in a box.
 -- ...(origin, fromlen, names)
 function bgml.get_nodes_around(...)
-    return get_nodes_x(minetest.find_nodes_in_area, ...)
+    return get_nodes_x(engine.find_nodes_in_area, ...)
 end
 
 -- Search for nodes under air in a box.
 -- ...(origin, fromlen, names)
 function bgml.get_nodes_around_under_air(...)
-    return get_nodes_x(minetest.find_nodes_in_area_under_air, ...)
+    return get_nodes_x(engine.find_nodes_in_area_under_air, ...)
 end
 
 -- Get the mapblock a node belongs to.

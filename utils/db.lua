@@ -31,7 +31,7 @@ function dmt:save()
     if not f then
         error("Unable to save database to: "..self.tmppath)
     end
-    f:write(minetest.serialize(self.data))
+    f:write(engine.serialize(self.data))
     f:close()
     if not os.rename(self.tmppath, self.path) then
         error("Unable to rename temporary database to: "..self.path)
@@ -68,7 +68,7 @@ end
 
 setmetatable(bgml.db, {__call = function(self, ...) return bgml.db.new(...) end, __index = dmt})
 
-minetest.register_globalstep(function(dtime)
+engine.register_globalstep(function(dtime)
     -- Check if any databases need added to the save queue.
     for name,t in pairs(bgml.db.tables) do
         if not bgml.db.save_pending[name] and (os.time() - t.last_save) > bgml.db.save_registry[name] then
@@ -87,7 +87,7 @@ minetest.register_globalstep(function(dtime)
 end)
 
 -- Save all databases at shutdown time.
-minetest.register_on_shutdown(function()
+engine.register_on_shutdown(function()
     bgml.hooks.global:call("db_shutdown_begin")
     for name,t in pairs(bgml.db.tables) do
         t:save()
@@ -97,7 +97,7 @@ end)
 
 if bgml.internal.config.db_cleaner then
     bgml.hooks.global:add("db_shutdown_end", "bgml:db_cleaner", function()
-        for _,name in ipairs(minetest.get_dir_list(bgml.internal.config.db_path), false) do
+        for _,name in ipairs(engine.get_dir_list(bgml.internal.config.db_path), false) do
             if not bgml.db.tables[name] then
                 if not os.remove(basepath(name)) then
                     error("Could not remove database: "..name)
@@ -112,14 +112,14 @@ bgml.hooks.global:add("db_shutdown_end", "bgml:db_logger", function()
     bgml.internal.log.info("[db] All databases saved due to shutdown.")
 end)
 
-minetest.mkdir(bgml.internal.config.db_path)
+engine.mkdir(bgml.internal.config.db_path)
 
 -- Preload all databases into the holding table.
 local num = 0
-for _,name in ipairs(minetest.get_dir_list(bgml.internal.config.db_path), false) do
+for _,name in ipairs(engine.get_dir_list(bgml.internal.config.db_path), false) do
     local f = io.open(basepath(name), "r")
     if f then
-        bgml.db.load_hold[name] = minetest.deserialize(f:read("*all"))
+        bgml.db.load_hold[name] = engine.deserialize(f:read("*all"))
         f:close()
     else
         error("Unreadable database in the db path: "..name)

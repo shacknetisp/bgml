@@ -2,7 +2,7 @@ bgml.require("core/hooks")
 bgml.require("core/logging")
 -- Calls the mod beginning hooks, returns a fresh mod table.
 function bgml.mod.begin()
-    local modname = minetest.get_current_modname()
+    local modname = engine.get_current_modname()
     local modtable = {
         require = bgml.mod.require_factory(),
         ready = bgml.mod.ready_mod_factory(),
@@ -19,7 +19,7 @@ end
 
 -- Returns a function that calls the mod ready hooks.
 function bgml.mod.ready_mod_factory()
-    local modname = minetest.get_current_modname()
+    local modname = engine.get_current_modname()
     return function()
         bgml.hooks.global:call("mod_ready", modname)
         bgml.hooks.global:call("mod_ready:"..modname)

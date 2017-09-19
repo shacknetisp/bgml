@@ -24,7 +24,7 @@ end
 
 local function is_x(path, type)
     local dir, name = bgml.fsutils.split_path(path)
-    for _,n in ipairs(minetest.get_dir_list(dir, type)) do
+    for _,n in ipairs(engine.get_dir_list(dir, type)) do
         if n == name then
             return true
         end

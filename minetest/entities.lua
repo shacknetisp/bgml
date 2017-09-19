@@ -2,7 +2,7 @@ bgml.entities = {
     loaded = {},
 }
 
-minetest.register_globalstep(function(dtime)
+engine.register_globalstep(function(dtime)
     local to_unload = {}
     for id,v in pairs(bgml.entities.loaded) do
         -- If the object is inaccessible, and therefore unloaded:
@@ -22,7 +22,7 @@ minetest.register_globalstep(function(dtime)
 end)
 
 function bgml.register_entity(name, def)
-    minetest.register_entity(name, bgml.lutils.combine(def, {
+    engine.register_entity(name, bgml.lutils.combine(def, {
 
         permanent = false,
         autosave = true,
@@ -37,16 +37,16 @@ function bgml.register_entity(name, def)
 
             -- If an entity has no static data then destroy it.
             if #staticdata <= 0 then
-                bgml.internal.log.error("[entities] Removed entity "..name.." due to empty staticdata at "..minetest.pos_to_string(self.object:getpos()))
+                bgml.internal.log.error("[entities] Removed entity "..name.." due to empty staticdata at "..engine.pos_to_string(self.object:getpos()))
                 self.object:remove()
                 return
             end
 
             -- Build extra/external properties from staticdata.
-            self.ext = minetest.deserialize(staticdata)
+            self.ext = engine.deserialize(staticdata)
 
             if type(self.ext) ~= "table" or not self.ext.id then
-                bgml.internal.log.error("[entities] Removed entity "..name.." due to invalid ext table at "..minetest.pos_to_string(self.object:getpos()))
+                bgml.internal.log.error("[entities] Removed entity "..name.." due to invalid ext table at "..engine.pos_to_string(self.object:getpos()))
                 self.object:remove()
                 return
             end
@@ -116,21 +116,21 @@ function bgml.register_entity(name, def)
             end
 
             -- Return the serialized staticdata, excluding unwanted parts.
-            return minetest.serialize(bgml.lutils.exclude(self.ext, {"param"}))
+            return engine.serialize(bgml.lutils.exclude(self.ext, {"param"}))
         end,
     }))
 end
 
 function bgml.add_entity(pos, name, param)
     -- Build the parameters
-    local def = minetest.registered_entities[name]
+    local def = engine.registered_entities[name]
     local ext = {
         id = bgml.utils.uid(),
     }
-    local staticdata = minetest.serialize(ext)
+    local staticdata = engine.serialize(ext)
 
     -- Create the object. The staticdata will be passed to on_activate.
-    local obj = minetest.add_entity(pos, name, staticdata)
+    local obj = engine.add_entity(pos, name, staticdata)
     -- If it was successful:
     if obj then
         -- Set the param, which can be accessed from on_creation or on_load.
